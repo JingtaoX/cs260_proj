@@ -57,7 +57,7 @@ impl IntConstAbsVal {
                     RelaOp::GreaterEq => if i >= j { IntConstAbsVal::IntConst(1) } else { IntConstAbsVal::IntConst(0) },
                 }
             }
-            (IntConstAbsVal::Bottom, IntConstAbsVal::Bottom) => IntConstAbsVal::Top,
+            // (IntConstAbsVal::Bottom, IntConstAbsVal::Bottom) => IntConstAbsVal::Top,
             (_, IntConstAbsVal::Bottom) |
             (IntConstAbsVal::Bottom, _) => IntConstAbsVal::Bottom,
             _ => IntConstAbsVal::Top,
@@ -129,17 +129,42 @@ impl AbstractStore {
                 self.insert(lhs.name.clone(), op);
             }
             Instruction::Arith { lhs, op1, op2, aop } => {
-                let op1 = self.resolve_operand(op1);
-                let op2 = self.resolve_operand(op2);
-                let result = IntConstAbsVal::arith(&op1, &op2, aop);
-                self.insert(lhs.name.clone(), result);
+                let mut exist_not_int_op = false;
+                if let Operand::Var(v) = op1 {
+                    if v.typ != Type::Int { exist_not_int_op = true; }
+                }
+                if let Operand::Var(v) = op2 {
+                    if v.typ != Type::Int { exist_not_int_op = true; }
+                }
+                if exist_not_int_op {
+                    self.insert(lhs.name.clone(), IntConstAbsVal::Top);
+                }
+                else {
+                    let op1 = self.resolve_operand(op1);
+                    let op2 = self.resolve_operand(op2);
+                    let result = IntConstAbsVal::arith(&op1, &op2, aop);
+                    self.insert(lhs.name.clone(), result);
+                }
+
             }
             Instruction::Cmp { lhs, op1, op2, rop } => {
-
-                let op1 = self.resolve_operand(op1);
-                let op2 = self.resolve_operand(op2);
-                let result = IntConstAbsVal::cmp(&op1, &op2, rop);
-                self.insert(lhs.name.clone(), result);
+                // println!("lhs: {:?}, op1: {:?}, op2: {:?}, rop: {:?}", lhs, op1, op2, rop);
+                let mut exist_not_int_op = false;
+                if let Operand::Var(v) = op1 {
+                    if v.typ != Type::Int { exist_not_int_op = true; }
+                }
+                if let Operand::Var(v) = op2 {
+                    if v.typ != Type::Int { exist_not_int_op = true; }
+                }
+                if exist_not_int_op {
+                    self.insert(lhs.name.clone(), IntConstAbsVal::Top);
+                }
+                else {
+                    let op1 = self.resolve_operand(op1);
+                    let op2 = self.resolve_operand(op2);
+                    let result = IntConstAbsVal::cmp(&op1, &op2, rop);
+                    self.insert(lhs.name.clone(), result);
+                }
             }
             Instruction::Load { lhs, src:_src } => {
                 if lhs.typ != Type::Int { return; }
