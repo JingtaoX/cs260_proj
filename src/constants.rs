@@ -6,6 +6,7 @@ use std::fs;
 use std::process::exit;
 use crate::lir::{*};
 use std::collections::{HashMap, VecDeque};
+use crate::constants::IntConstAbsVal::Top;
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Copy)]
 enum IntConstAbsVal {
@@ -57,8 +58,9 @@ impl IntConstAbsVal {
                     RelaOp::GreaterEq => if i >= j { IntConstAbsVal::IntConst(1) } else { IntConstAbsVal::IntConst(0) },
                 }
             }
-            // (IntConstAbsVal::Bottom, _) |
-            // (_, IntConstAbsVal::Bottom) => IntConstAbsVal::Bottom,
+            (IntConstAbsVal::Bottom, IntConstAbsVal::Bottom) => IntConstAbsVal::Top,
+            (_, IntConstAbsVal::Bottom) |
+            (IntConstAbsVal::Bottom, _) => IntConstAbsVal::Bottom,
             _ => IntConstAbsVal::Top,
         }
     }
