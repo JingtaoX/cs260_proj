@@ -45,7 +45,7 @@ impl IntConstAbsVal {
         }
     }
     fn cmp(op1: &IntConstAbsVal, op2: &IntConstAbsVal, rop: &RelaOp) -> IntConstAbsVal {
-        println!("op1: {:?}, op2: {:?}, rop: {:?}", op1, op2, rop);
+        // println!("op1: {:?}, op2: {:?}, rop: {:?}", op1, op2, rop);
         match (op1, op2) {
             (IntConstAbsVal::IntConst(i), IntConstAbsVal::IntConst(j)) => {
                 match rop {
