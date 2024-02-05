@@ -45,6 +45,7 @@ impl IntConstAbsVal {
         }
     }
     fn cmp(op1: &IntConstAbsVal, op2: &IntConstAbsVal, rop: &RelaOp) -> IntConstAbsVal {
+        println!("op1: {:?}, op2: {:?}, rop: {:?}", op1, op2, rop);
         match (op1, op2) {
             (IntConstAbsVal::IntConst(i), IntConstAbsVal::IntConst(j)) => {
                 match rop {
@@ -56,8 +57,8 @@ impl IntConstAbsVal {
                     RelaOp::GreaterEq => if i >= j { IntConstAbsVal::IntConst(1) } else { IntConstAbsVal::IntConst(0) },
                 }
             }
-            (IntConstAbsVal::Bottom, _) |
-            (_, IntConstAbsVal::Bottom) => IntConstAbsVal::Bottom,
+            // (IntConstAbsVal::Bottom, _) |
+            // (_, IntConstAbsVal::Bottom) => IntConstAbsVal::Bottom,
             _ => IntConstAbsVal::Top,
         }
     }
@@ -133,6 +134,7 @@ impl AbstractStore {
                 self.insert(lhs.name.clone(), result);
             }
             Instruction::Cmp { lhs, op1, op2, rop } => {
+
                 let op1 = self.resolve_operand(op1);
                 let op2 = self.resolve_operand(op2);
                 let result = IntConstAbsVal::cmp(&op1, &op2, rop);
@@ -221,6 +223,7 @@ fn int_const_analysis(program: &Program, function_name: &str) -> HashMap<String,
         let mut current_store = bb2store.entry(bb_name.clone()).or_insert(
             AbstractStore::new(),
         ).clone();
+        // println!("working on {}", bb_name);
         // execute the instructions in the basic block to update the store
         bb.insts.iter().for_each(|inst| current_store.execute(inst));
 
