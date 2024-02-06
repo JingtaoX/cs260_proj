@@ -28,3 +28,11 @@ path = "src/constants.rs"
 [[bin]]
 name = "test"
 path = "src/test.rs"
+
+[[bin]]
+name = "rdef"
+path = "src/rdef.rs"
+
+[[bin]]
+name = "control"
+path = "src/control.rs"

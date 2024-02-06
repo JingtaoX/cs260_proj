@@ -3,6 +3,8 @@ pub mod stats;
 mod constants;
 mod test;
 mod intervals;
+mod rdef;
+mod control;
 
 use std::collections::HashMap;
 use std::fs;
