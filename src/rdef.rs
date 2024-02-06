@@ -5,7 +5,7 @@ use std::fs;
 
 use std::process::exit;
 use crate::lir::{*};
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, VecDeque, HashSet};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Copy)]
 enum IntConstAbsVal {
